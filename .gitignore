@@ -1,0 +1,12 @@
+# itchat
+*.pkl
+
+# config file
+monitor.yml
+
+# env files
+*.env
+
+# IDE/Editors
+.idea
+.vscode

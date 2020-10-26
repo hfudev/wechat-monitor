@@ -1,0 +1,22 @@
+# Services to run on developer machine
+version: "3"
+services:
+  db:
+    image: "postgres:13-alpine"
+    restart: always
+    ports:
+      - 5400:5432
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+    env_file:
+      - db.env
+  adminer:
+    image: adminer
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - 5401:8080
+
+volumes:
+  postgres-dev-data:
