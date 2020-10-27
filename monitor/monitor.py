@@ -22,10 +22,11 @@ from .action import import_message, import_user
 
 @itchat.msg_register([TEXT])
 def text_reply(msg):
-    user_id = msg.fromUserName
     name = msg.user.get('RemarkName') or msg.user.get('NickName') or msg.user.get('UserName')
+    if msg.user.get('UserName') != msg.fromUserName:
+        return
 
-    user = import_user(user_id, name)
+    user = import_user(msg.fromUserName, name)
     message = import_message(user, msg.text)
 
-    logging.info(f'{user}>: {message}')
+    logging.info(f'{user}: {message}')
