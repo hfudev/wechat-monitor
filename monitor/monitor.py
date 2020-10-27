@@ -13,7 +13,19 @@
 # limitations under the License.
 
 import logging
-import sys
 
-# logging related
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+import itchat
+from itchat.content import TEXT
+
+from .action import import_message, import_user
+
+
+@itchat.msg_register([TEXT])
+def text_reply(msg):
+    user_id = msg.fromUserName
+    name = msg.user.get('RemarkName') or msg.user.get('NickName') or msg.user.get('UserName')
+
+    user = import_user(user_id, name)
+    message = import_message(user, msg.text)
+
+    logging.info(f'{user}>: {message}')

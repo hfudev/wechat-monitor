@@ -13,7 +13,17 @@
 # limitations under the License.
 
 import logging
-import sys
 
-# logging related
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+from .model import Message, User
+
+
+def import_user(user_id: str, user_name: str):
+    user, _ = User.get_or_create(id=user_id, name=user_name)
+    logging.info(f'Imported: {user}')
+    return user
+
+
+def import_message(user: User, message: str):
+    message = Message.create(user=user, text=message)
+    logging.info(f'Imported: {message}')
+    return message

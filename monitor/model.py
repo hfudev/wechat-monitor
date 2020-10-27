@@ -1,4 +1,4 @@
-# Copyright 2020 hanxifu
+# Copyright 2020 Fu Hanxi
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,25 +12,53 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+import datetime
 
 from peewee import *
-from playhouse.db_url import connect
 
-db = connect(os.getenv('DB_URL'))
+DB = DatabaseProxy()
 
 
 class BaseModel(Model):
     class Meta:
-        database = db
+        database = DB
 
 
 class User(BaseModel):
-    username = CharField(unique=True)
+    id = CharField(primary_key=True)
+    name = CharField(unique=True)
+
+    def __str__(self):
+        return f'User <{self.name}>'
+
+
+class Message(BaseModel):
+    user = ForeignKeyField(User)
+    text = CharField(null=False)
+    created_at = DateTimeField(default=datetime.datetime.now(tz=datetime.timezone.utc))
+
+    def __str__(self):
+        return f'Message <{self.text}>'
+
+
+class Record(BaseModel):
+    id = AutoField()
+    name = CharField(null=False)
+    date = DateField(default=datetime.datetime.utcnow().date())
+    counter = IntegerField(default=0)
+
+    def __str__(self):
+        return f'Record {self.date} <{self.name}> [{self.counter}]'
 
 
 models = [
-    User
+    User,
+    Message,
+    Record,
 ]
 
-db.create_tables(models)
+
+def create_tables():
+    with DB.atomic():
+        tables_to_create = list(filter(lambda m: not m.table_exists(), models))
+        DB.create_tables(tables_to_create)

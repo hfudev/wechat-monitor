@@ -12,8 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
-import sys
+import os
 
-# logging related
-logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+from monitor.model import DB, create_tables
+from monitor.monitor import *
+from playhouse.db_url import connect
+
+if __name__ == '__main__':
+    db = connect(os.getenv('DB_URL'))
+    DB.initialize(db)
+    create_tables()
+
+    itchat.auto_login(hotReload=True)
+    itchat.run(True)
