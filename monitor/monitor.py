@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import logging
-
 import itchat
 from itchat.content import TEXT
 
@@ -27,6 +25,5 @@ def text_reply(msg):
         return
 
     user = import_user(msg.fromUserName, name)
-    message = import_message(user, msg.text)
-
-    logging.info(f'{user}: {message}')
+    if user:
+        message = import_message(user, msg.text)

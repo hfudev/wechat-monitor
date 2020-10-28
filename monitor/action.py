@@ -13,17 +13,27 @@
 # limitations under the License.
 
 import logging
+from typing import Optional
+
+from peewee import IntegrityError
 
 from .model import Message, User
 
 
-def import_user(user_id: str, user_name: str):
-    user, _ = User.get_or_create(id=user_id, name=user_name)
-    logging.info(f'Imported: {user}')
-    return user
+def import_user(user_id: str, user_name: str) -> Optional[User]:
+    try:
+        user, created = User.get_or_create(id=user_id, name=user_name)
+    except IntegrityError as e:
+        logging.error(f'{str(e)}\n'
+                      f'id: {user_id}, name: {user_name}')
+        return None
+    else:
+        if created:
+            logging.info(f'Imported: {user}')
+        return user
 
 
-def import_message(user: User, message: str):
+def import_message(user: User, message: str) -> Message:
     message = Message.create(user=user, text=message)
-    logging.info(f'Imported: {message}')
+    logging.info(f'{user}: {message}')
     return message
