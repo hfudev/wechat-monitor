@@ -13,7 +13,27 @@
 # limitations under the License.
 
 import logging
+import os
+import re
 import sys
+from typing import Dict, List, Pattern, Tuple
+
+from ruamel import yaml
+
+PROJ_DIR = os.path.join(os.path.dirname(__file__), '..')
 
 # logging related
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+
+
+# YAML config
+def _parse_re_list(keyword_dict: Dict[str, str]) -> List[Tuple[str, Pattern]]:
+    res = []
+    for keyword, word in keyword_dict.items():
+        res.append((keyword, re.compile(word)))
+    return res
+
+
+default_path = os.path.join(PROJ_DIR, '.monitor.yml')
+MONITOR_CFG = yaml.safe_load(open(default_path))
+KEYWORD_REGEX = _parse_re_list(MONITOR_CFG['keywords'])

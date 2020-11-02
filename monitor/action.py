@@ -20,12 +20,12 @@ from peewee import IntegrityError
 from .model import Message, User
 
 
-def import_user(user_id: str, user_name: str) -> Optional[User]:
+def import_user(user_name: str) -> Optional[User]:
     try:
-        user, created = User.get_or_create(id=user_id, name=user_name)
+        user, created = User.get_or_create(name=user_name)
     except IntegrityError as e:
         logging.error(f'{str(e)}\n'
-                      f'id: {user_id}, name: {user_name}')
+                      f'name: {user_name}')
         return None
     else:
         if created:

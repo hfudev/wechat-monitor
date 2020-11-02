@@ -3,7 +3,7 @@
 *.png
 
 # config file
-monitor.yml
+.monitor.yml
 
 # env files
 *.env
