@@ -32,7 +32,7 @@ def text_reply(msg):
     if user:
         import_message(user, msg.text)
 
-    if user not in MONITOR_CFG['users']:
+    if user.name not in MONITOR_CFG['users']:
         return
 
     for keyword, regex in KEYWORD_REGEX:
@@ -40,5 +40,5 @@ def text_reply(msg):
             Record.insert(name=keyword).on_conflict(
                 conflict_target=[Record.name, Record.date],
                 update={Record.counter: Record.counter + 1},
-            )
+            ).execute()
             logging.info(f'{msg.text} recorded <{keyword}>')

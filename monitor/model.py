@@ -44,9 +44,14 @@ class Message(BaseModel):
 
 class Record(BaseModel):
     id = AutoField()
-    name = CharField(null=False)
     date = DateField(default=datetime.datetime.utcnow().date())
-    counter = IntegerField(default=0)
+    name = CharField(null=False)
+    counter = IntegerField(default=1)
+
+    class Meta:
+        indexes = (
+            (('name', 'date'), True),
+        )
 
     def __str__(self):
         return f'Record {self.date} <{self.name}> [{self.counter}]'
