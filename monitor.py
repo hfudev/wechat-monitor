@@ -23,5 +23,5 @@ if __name__ == '__main__':
     DB.initialize(db)
     create_tables()
 
-    itchat.auto_login(hotReload=True)
+    itchat.auto_login(hotReload=True, enableCmdQR=2)
     itchat.run(True)
